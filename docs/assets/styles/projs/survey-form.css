@@ -74,3 +74,43 @@ input[type="submit"] {
 .option input {
     margin-right: 1em;
 }
+
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+
+background-color: rgba(37, 117, 252, 0.1);
+    color: #2575fc;
+}
+
+
+
+.follow-me:hover::after {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 600;
+    content: '\f0c1';
+    display: inline-block;
+    margin-left: 0.5em;
+}
+
+
+
+.back-to-homepage
+{
+    font-size: 50px;
+    position: fixed;
+    margin:0px 20px;
+    letter-spacing:0.1em;
+}
+
+i
+{
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 600;
+    content: '\f0c1';
+    display: inline-block;
+    margin-right: 0.2em;
+}

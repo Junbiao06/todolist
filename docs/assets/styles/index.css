@@ -157,3 +157,12 @@
                 align-items: center;
             }
         }
+
+        .logo::before
+        {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 600;
+            content: '\f015';
+            display:inline-block;
+            margin-right:0.5em;
+        }
