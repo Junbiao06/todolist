@@ -1,60 +1,39 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Junbiao06's-homepage</title>
-    <link rel="stylesheet" href=".//assets/styles/index.css">
-    <link rel="icon" type="image/x-icon" href=".//image/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-do List</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" type="image/jpg" href="assets/images/favicon.jpg">
+  <script src="assets/js/script.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">我的作品集</div>
-                <ul class="nav-links">
-                    <li><a href="index.html" class="active">首页</a></li>
-                    <li><a href="survey-form.html">项目展示</a></li>
-                    <li><a href="about.html">关于我</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+  <h1><img src="assets/images/favicon.jpg">To-do List <i class="fa fa-edit"></i></h1>
+  <form class="info" autocomplete="off">
+    <input type="text" class="info-task" name="info-task" id="info-task" placeholder="Please input your task">
+    <select name="info-tag" class="info-tag  " id="info-tag">
+      <option value="">( Select one tag )</option>
+      <option value="daily">Daily</option>
+      <option value="work">Work</option>
+      <option value="study">Study</option>
+      <option value="sport">Sport</option>
+    </select>
+    <input type="date" class="info-deadline" name="info-deadline" id="info-deadline">
+    <div class="info-deleteAll">Delete All</div>
+    <button class="info-add">Add To-do</button>
+  </form>
 
-    <section class="hero">
-        <div class="container">
-            <h1>欢迎访问我的GitHub Pages网站</h1>
-            <p>这里展示了我使用HTML和CSS创建的项目，点击下方按钮了解更多</p>
-            <a href="survey-form.html" class="btn">查看我的项目</a>
-        </div>
-    </section>
+  <article>
+  </article>
 
-    <section class="container">
-        <div class="features">
-            <div class="feature-card">
-                <h3>纯HTML/CSS实现</h3>
-                <p>所有页面都使用纯HTML和CSS构建，无需JavaScript</p>
-            </div>
-            <div class="feature-card">
-                <h3>响应式设计</h3>
-                <p>适配各种设备尺寸，从手机到桌面电脑</p>
-            </div>
-            <div class="feature-card">
-                <h3>GitHub Pages部署</h3>
-                <p>通过GitHub Pages免费托管静态网站</p>
-            </div>
-        </div>
-    </section>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2023 我的GitHub网站. 所有权利保留.</p>
-        </div>
-    </footer>
+
+
+
 </body>
 
 </html>
