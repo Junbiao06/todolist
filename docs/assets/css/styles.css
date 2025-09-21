@@ -65,6 +65,10 @@ form.info {
   cursor: pointer;
 }
 
+.info-deleteAll:hover {
+  background: #ca2d3c;
+}
+
 .info-add {
   width: 8%;
   border-radius: 0 20px 20px 0;
@@ -74,6 +78,10 @@ form.info {
   background: #28a745;
   color: white;
   cursor: pointer;
+}
+
+.info-add:hover {
+  background: #177f2f;
 }
 
 .items {
@@ -121,4 +129,5 @@ button.item-delete {
 button.item-delete:hover {
   scale: 1.2;
   background: #ca2d3c;
+
 }
