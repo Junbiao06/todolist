@@ -61,6 +61,7 @@ info.addEventListener('click', (event) => {
       arr.length = 0
       localStorage.setItem('data', JSON.stringify(arr))
       render()
+      info.reset()
     }
 })
 
@@ -90,6 +91,7 @@ article.addEventListener('click', (event) => {
 //     arr[event.target.dataset.idCheckbox].style.textDecoration = 'line-through'
 //   render()
 // })
+
 
 
 
