@@ -2,15 +2,29 @@
   box-sizing: border-box;
 }
 
+.todo-container {
+  width: 90%;
+  max-width: 800px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+}
+
 body {
-  background: #f7f7f7;
+  background: linear-gradient(135deg, #74ABE2, #5563DE);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 40px;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 h1 {
   text-align: center;
   word-spacing: 0.5em;
   font-size: 2em;
-  padding: 0 15rem;
 }
 
 
@@ -20,8 +34,36 @@ img {
   margin: 0 0.5rem;
 }
 
+nav {
+  position: relative;
+  /*配合小红线使用，不知道为什么*/
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eaeaea;
+  gap: 60px;
+}
 
-form.info {
+a {
+  cursor: pointer;
+}
+
+.nav-underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: #ff4d4f;
+  transition: all 0.3s ease;
+}
+
+nav a.active {
+  color: #ff4d4f;
+  font-weight: bold;
+}
+
+form.info,
+form.search {
   display: flex;
   margin-top: 2rem;
   justify-content: center;
@@ -29,11 +71,20 @@ form.info {
   height: 50px;
 }
 
+form.search {
+  display: none;
+}
+
 .info-task,
 .info-tag,
 .info-deadline,
 .info-deleteAll,
-.info-add {
+.info-add,
+.search-task,
+.search-tag,
+.search-deadline,
+.search-deleteAll,
+.search-add {
   outline: none;
   padding-left: 1em;
   font-size: 1em;
@@ -43,45 +94,62 @@ form.info {
   border-bottom: 1px solid rgb(60, 54, 54);
 }
 
-.info-task {
-  width: 25%;
-  border-radius: 20px 0 0 20px;
+.info-task,
+.search-task {
+  width: 30%;
+  border-radius: 25px 0 0 25px;
   border-left: 1px solid rgb(60, 54, 54);
+  padding-left: 1.5em;
 }
 
-.info select {
-  width: 13%;
+.info select,
+.search select {
+  width: 25%;
 }
 
-.info-deadline {
-  width: 13%;
+.info-deadline,
+.search-deadline {
+  width: 20%;
+  font-size: 1rem;
 }
 
-.info-deleteAll {
-  width: 8%;
-  background: #dc3545;
-  color: white;
-  line-height: 50px;
-  cursor: pointer;
-}
-
-.info-deleteAll:hover {
-  background: #ca2d3c;
-}
-
-.info-add {
-  width: 8%;
-  border-radius: 0 20px 20px 0;
+.info-add,
+.search-add {
+  width: 10%;
+  border-radius: 0 25px 25px 0;
   border-right: 1px solid rgb(60, 54, 54);
   line-height: 50px;
   padding-left: 0;
-  background: #28a745;
+  background: #606bd4;
   color: white;
   cursor: pointer;
 }
 
-.info-add:hover {
-  background: #177f2f;
+.info-add:hover,
+.search-add:hover {
+  background: #4d57cc;
+}
+
+.deleteAll {
+  display: block;
+  width: 20%;
+  background: #e64857;
+  color: white;
+  cursor: pointer;
+  text-align: center;
+  margin: 1.5em auto;
+  padding: 0.5em 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.deleteAll:hover {
+  background: #ca2d3c;
+}
+
+article {
+  border-top: 1px solid #eaeaea;
 }
 
 .items {
@@ -89,7 +157,7 @@ form.info {
   text-align: center;
   align-items: baseline;
   justify-content: space-between;
-  margin: 1.5rem 14rem;
+  margin: 1.5rem 1rem;
   padding: 0.5rem 2rem;
   border: 1px dashed rgb(60, 54, 54);
   background-color: white;
@@ -98,23 +166,28 @@ form.info {
 
 .container-left {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: flex-start;
-  gap: 10px;
+  gap: 30px;
 }
 
 .container-left .item-checkbox:hover {
-  transition: all 0.3s;
-  transform: translateY(-2px);
   scale: 1.5;
+}
 
+.done {
+  text-decoration: line-through;
+}
+
+.container-left .item-task {
+  max-width: 5em;
 }
 
 .container-right {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 15px;
 }
 
 button.item-delete {
@@ -123,11 +196,9 @@ button.item-delete {
   padding: 0.5rem;
   border: 0;
   border-radius: 2px;
-  transition: all 0.3s;
 }
 
 button.item-delete:hover {
   scale: 1.2;
   background: #ca2d3c;
-
 }

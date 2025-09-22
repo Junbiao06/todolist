@@ -12,27 +12,55 @@
 </head>
 
 <body>
-  <h1><img src="assets/images/favicon.jpg">To-do List <i class="fa fa-edit"></i></h1>
-  <form class="info" autocomplete="off">
-    <input type="text" class="info-task" name="info-task" id="info-task" placeholder="Please input your task">
-    <select name="info-tag" class="info-tag" id="info-tag">
-      <option value="">( Select one tag )</option>
-      <option value="daily">Daily</option>
-      <option value="work">Work</option>
-      <option value="study">Study</option>
-      <option value="sport">Sport</option>
-    </select>
-    <input type="date" class="info-deadline" name="info-deadline" id="info-deadline">
-    <div class="info-deleteAll">Delete All</div>
-    <button class="info-add">Add To-do</button>
-  </form>
+  <div class="todo-container">
+    <h1>📋待办事项</i></h1>
+    <nav><a data-id="0" class="active info-a">🏠主页</a> | <a data-id="1" class="search-a">🔍搜索</a>
+      <div class="nav-underline"></div>
+    </nav>
 
-  <article>
-  </article>
+    <form class="info" autocomplete="off">
+      <input type="text" class="info-task" name="info-task" id="info-task" placeholder="✍ 输入你的任务\(￣︶￣*\)">
+      <select name="info-tag" class="info-tag" id="info-tag">
+        <option value="">(请选择一个标签🏷️)</option>
+        <option value="生活">生活🧳</option>
+        <option value="工作">工作🛣️</option>
+        <option value="学习">学习📚</option>
+        <option value="运动">运动🏃</option>
+        <option value="旅行">旅行🏖️</option>
+      </select>
+      <input type="date" class="info-deadline" name="info-deadline" id="info-deadline">
+      <button class=" info-add">
+        <i class="fa fa-plus"></i> 添加
+      </button>
+    </form>
+
+    <form class="search" autocomplete="off">
+      <input type="text" class="search-task" name="search-task" id="search-task" placeholder="🔍 搜索你的任务\(￣︶￣*\)">
+      <select name="search-tag" class="search-tag" id="search-tag">
+        <option value="">(请选择一个标签🏷️)</option>
+        <option value="生活">生活</option>
+        <option value="工作">工作</option>
+        <option value="学习">学习</option>
+        <option value="运动">运动</option>
+        <option value="旅行">旅行</option>
+      </select>
+      <input type="date" class="search-deadline" name="search-deadline" id="search-deadline">
+      <button class=" search-add">
+        <i class="fa fa-plus"></i> 搜索
+      </button>
+    </form>
+
+
+
+    <div class="deleteAll">删除全部🗑️</div>
+
+    <article>
+    </article>
 
 
 
 
+  </div>
 
 </body>
 

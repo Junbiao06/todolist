@@ -1,97 +1,164 @@
+let array = JSON.parse(localStorage.getItem('data')) || []
+let matchedArr = []
 
-
-const arr = JSON.parse(localStorage.getItem('data')) || []
-
-
+const nav = document.querySelector('nav')
+const underline = document.querySelector('.nav-underline')
 const info = document.querySelector('.info')
+const search = document.querySelector('.search')
 
 const task = document.querySelector('.info-task')
 const tag = document.querySelector('.info-tag')
 const deadline = document.querySelector('.info-deadline')
 
-const btn_delete = document.querySelector('.item-delete')
 const btn_add = document.querySelector('.info-add')
 const article = document.querySelector('article')
 
-function render() {
+const search_task = document.querySelector('.search-task')
+const search_tag = document.querySelector('.search-tag')
+const search_deadline = document.querySelector('.search-deadline')
 
-  const sectionArr = arr.map((ele, index) => {
+//只在刷新页面的时候执行
+function removeExpiredTasks() {
+  array = array.filter(element => new Date(element.deadline) >= new Date().setHours(0, 0, 0, 0));
+  localStorage.setItem('data', JSON.stringify(array));
+  render(array);
+}
+
+function render(array) {
+  const sectionArr = array.map((ele, index) => {
     return `
-    <section class="items">
+    <section class="items ${ele.done ? 'done' : ''}">
     <div class="container-left">
-    <input type="checkbox" data-IdCheckbox=${index} class="item-checkbox">
+    <input type="checkbox" data-id=${ele.id} class="item-checkbox" ${ele.done ? 'checked' : ''}>
     <span class="item-number">No.${index + 1}</span>
     <span class="item-task">${ele.task}</span>
-    <span class="item-tag">${ele.tag}</span>
     </div>
     <div class="container-right">
-    <span class="item-createdAt">Created at: ${ele.createdAt}</span>
-    <span class="item-deadline">Deadline: ${ele.deadline}</span>
-    <button class="item-delete" data-IdDelete=${index}>delete</button>
+    <span class="item-tag">${ele.tag}</span>
+    <span class="item-createdAt">创建日期<br>${ele.createdAt}</span>
+    <span class="item-deadline">截止日期<br>${ele.deadline}</span>
+    <button class="item-delete" data-id=${ele.id}>删除</button>
     </div>
     </section>`})
   article.innerHTML = sectionArr.join('')
 }
-render()
+
+removeExpiredTasks()
+render(array)
+
+underline.style.width = `${document.querySelector('nav a.active').offsetWidth}px`
+underline.style.transform = `translateX(${document.querySelector('nav a.active').getBoundingClientRect().left - nav.getBoundingClientRect().left}px)`
+
+
+nav.addEventListener('click', (event) => {
+  if (event.target.tagName === "A") {
+    document.querySelector('nav a.active').classList.remove('active')
+    event.target.classList.add('active')
+    underline.style.width = `${event.target.offsetWidth}px` // 项目中没有效果
+    underline.style.transform = `translateX(${event.target.getBoundingClientRect().left - nav.getBoundingClientRect().left}px)`
+    if (event.target.classList.contains('info-a')) {
+      info.style.display = "flex"
+      search.style.display = "none"
+      matchedArr = []
+      render(array)
+    }
+    else {
+      info.style.display = "none"
+      search.style.display = "flex"
+      render(matchedArr)
+    }
+  }
+})
 
 info.addEventListener('submit', (event) => {
   event.preventDefault()
 
   if (!task.value || !tag.value || !deadline.value) {
-    return alert(`Please fill out this field!`)
+    return alert(`请完整填写代办！`)
   }
-  if (new Date(deadline.value).getTime() <= new Date().getTime())
-    return alert('Error input of Deadline')
+
+  if (new Date(deadline.value).getTime() < new Date().setHours(0, 0, 0, 0)) // 修改截止日期是今天的bug
+    return alert('截止日期不能早于今天！')
 
   const obj = {
-    task: task.value,
+    id: new Date().getTime(), // 加入查找模块不能使用splice和index得到的No进行删除，用时间戳和filter
+    task: task.value.trim(),
     tag: tag.value,
     createdAt: new Date().toLocaleDateString(),
-    deadline: deadline.value
+    deadline: deadline.value,
+    done: false
   }
-  arr.push(obj)
-  render()
+  array.push(obj)
+  render(array)
+  localStorage.setItem('data', JSON.stringify(array))
   info.reset()
-  localStorage.setItem('data', JSON.stringify(arr))
 })
-
-info.addEventListener('click', (event) => {
-  if (event.target.className === "info-deleteAll")
-    if (prompt(`Do you really want to delete all?\nPlease input "YES" to confirm operation.`) === 'YES') {
-      arr.length = 0
-      localStorage.setItem('data', JSON.stringify(arr))
-      render()
-      info.reset()
-    }
-})
-
 
 article.addEventListener('click', (event) => {
-  if (event.target.tagName === "BUTTON") {
-    arr.splice(event.target.dataset.idDelete, 1)
+  if (event.target.classList.contains('item-delete')) {
+    array = array.filter(element => element.id !== Number(event.target.dataset.id))
+    localStorage.setItem('data', JSON.stringify(array))
+    if (document.querySelector('nav a.active').classList.contains('info-a'))
+      render(array)
+    else {
+      matchedArr = matchedArr.filter(element => element.id !== Number(event.target.dataset.id))
+      render(matchedArr)
+    }
   }
-  render()
-  localStorage.setItem('data', JSON.stringify(arr))
+})
+
+
+document.querySelector('.deleteAll').addEventListener('click', () => {
+  if (array.length === 0) {
+    return alert('没有元素可以删除！')
+  }
+  const confirm = prompt(`你确认要删除所有代办吗？\n此操作无法撤销！\n请输入“确认删除”以确认此操作。`)
+  if (confirm === '确认删除') {
+    array.length = 0
+    render(array)
+    localStorage.setItem('data', JSON.stringify(array))
+    info.reset?.()
+  }
 })
 
 
 
+search.addEventListener('submit', (event) => {
+  event.preventDefault()
+  if (!search_task.value && !search_tag.value && !search_deadline.value) {
+    return alert(`搜索不能为空！`)
+  }
+  if (new Date(search_deadline.value).getTime() < new Date().setHours(0, 0, 0, 0)) // 修改了截止日期是今天的bug
+    return alert('截止日期不能早于今天！')
+  matchedArr = array.filter(element => {
+    const matchedTask = search_task.value ? element.task.toLowerCase().includes(search_task.value.toLowerCase()) : true
+
+    const matchedTag = search_tag.value ? element.tag.toLowerCase().includes(search_tag.value.toLowerCase()) : true
+
+    const matchedDeadline = search_deadline.value ? element.deadline.includes(search_deadline.value) : true
+
+    return matchedTask && matchedTag && matchedDeadline;
+  })
+  render(matchedArr)
+  search.reset()
+})
 
 
 
+article.addEventListener('change', (event) => {
+  if (event.target.classList.contains('item-checkbox')) {
+    const item = array.find(element => element.id === Number(event.target.dataset.id))
+    if (item) {
+      item.done = event.target.checked
+    }
+    if (event.target.checked) {
+      event.target.parentNode.parentNode.classList.add('done')
+      console.log(event.target.parentNode.parentNode)
+    } else {
+      event.target.parentNode.parentNode.classList.remove('done')
+      console.log(event.target.parentNode.parentNode)
 
-
-
-
-
-
-// 加入下划线操作失败
-// article.addEventListener('click', (event) => {
-//   if (event.target.className.toLowerCase() === 'item-checkbox')
-//     arr[event.target.dataset.idCheckbox].style.textDecoration = 'line-through'
-//   render()
-// })
-
-
-
-
+    }
+    localStorage.setItem('data', JSON.stringify(array))
+  }
+});
