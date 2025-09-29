@@ -3,14 +3,12 @@ let matchedArr = []
 
 const nav = document.querySelector('nav')
 const underline = document.querySelector('.nav-underline')
-const info = document.querySelector('.info')
-const search = document.querySelector('.search')
+const infoForm = document.querySelector('.info')
+const searchForm = document.querySelector('.search')
 
 const task = document.querySelector('.info-task')
 const tag = document.querySelector('.info-tag')
 const deadline = document.querySelector('.info-deadline')
-
-const btn_add = document.querySelector('.info-add')
 const article = document.querySelector('article')
 
 const search_task = document.querySelector('.search-task')
@@ -19,12 +17,12 @@ const search_deadline = document.querySelector('.search-deadline')
 
 //只在刷新页面的时候执行
 function removeExpiredTasks() {
-  array = array.filter(element => new Date(element.deadline) >= new Date().setHours(0, 0, 0, 0));
+  array = array.filter(element => new Date(element.deadline).getTime() >= new Date().setHours(0, 0, 0, 0));
   localStorage.setItem('data', JSON.stringify(array));
-  render(array);
+  renderTasks(array);
 }
 
-function render(array) {
+function renderTasks(array) {
   const sectionArr = array.map((ele, index) => {
     return `
     <section class="items ${ele.done ? 'done' : ''}">
@@ -43,34 +41,32 @@ function render(array) {
   article.innerHTML = sectionArr.join('')
 }
 
-removeExpiredTasks()
-render(array)
+function initUnderline() {
+  underline.style.width = `${document.querySelector('nav a.active').offsetWidth}px`
+  underline.style.transform = `translateX(${document.querySelector('nav a.active').getBoundingClientRect().left - nav.getBoundingClientRect().left}px)`
+}
 
-underline.style.width = `${document.querySelector('nav a.active').offsetWidth}px`
-underline.style.transform = `translateX(${document.querySelector('nav a.active').getBoundingClientRect().left - nav.getBoundingClientRect().left}px)`
-
-
-nav.addEventListener('click', (event) => {
+function updateNav(event) {
   if (event.target.tagName === "A") {
     document.querySelector('nav a.active').classList.remove('active')
     event.target.classList.add('active')
     underline.style.width = `${event.target.offsetWidth}px` // 项目中没有效果
     underline.style.transform = `translateX(${event.target.getBoundingClientRect().left - nav.getBoundingClientRect().left}px)`
     if (event.target.classList.contains('info-a')) {
-      info.style.display = "flex"
-      search.style.display = "none"
+      infoForm.style.display = "flex"
+      searchForm.style.display = "none"
       matchedArr = []
-      render(array)
+      renderTasks(array)
     }
     else {
-      info.style.display = "none"
-      search.style.display = "flex"
-      render(matchedArr)
+      infoForm.style.display = "none"
+      searchForm.style.display = "flex"
+      renderTasks(matchedArr)
     }
   }
-})
+}
 
-info.addEventListener('submit', (event) => {
+function submitModule(event) {
   event.preventDefault()
 
   if (!task.value || !tag.value || !deadline.value) {
@@ -89,41 +85,12 @@ info.addEventListener('submit', (event) => {
     done: false
   }
   array.push(obj)
-  render(array)
+  renderTasks(array)
   localStorage.setItem('data', JSON.stringify(array))
-  info.reset()
-})
+  infoForm.reset()
+}
 
-article.addEventListener('click', (event) => {
-  if (event.target.classList.contains('item-delete')) {
-    array = array.filter(element => element.id !== Number(event.target.dataset.id))
-    localStorage.setItem('data', JSON.stringify(array))
-    if (document.querySelector('nav a.active').classList.contains('info-a'))
-      render(array)
-    else {
-      matchedArr = matchedArr.filter(element => element.id !== Number(event.target.dataset.id))
-      render(matchedArr)
-    }
-  }
-})
-
-
-document.querySelector('.deleteAll').addEventListener('click', () => {
-  if (array.length === 0) {
-    return alert('没有元素可以删除！')
-  }
-  const confirm = prompt(`你确认要删除所有代办吗？\n此操作无法撤销！\n请输入“确认删除”以确认此操作。`)
-  if (confirm === '确认删除') {
-    array.length = 0
-    render(array)
-    localStorage.setItem('data', JSON.stringify(array))
-    info.reset?.()
-  }
-})
-
-
-
-search.addEventListener('submit', (event) => {
+function searchModule(event) {
   event.preventDefault()
   if (!search_task.value && !search_tag.value && !search_deadline.value) {
     return alert(`搜索不能为空！`)
@@ -139,13 +106,26 @@ search.addEventListener('submit', (event) => {
 
     return matchedTask && matchedTag && matchedDeadline;
   })
-  render(matchedArr)
-  search.reset()
-})
+  renderTasks(matchedArr)
+  if (matchedArr.length === 0)
+    alert('没有结果！')
+  searchForm.reset()
+}
 
+function deleteTask(event) {
+  if (event.target.classList.contains('item-delete')) {
+    array = array.filter(element => element.id !== Number(event.target.dataset.id))
+    localStorage.setItem('data', JSON.stringify(array))
+    if (document.querySelector('nav a.active').classList.contains('info-a'))
+      renderTasks(array)
+    else {
+      matchedArr = matchedArr.filter(element => element.id !== Number(event.target.dataset.id))
+      renderTasks(matchedArr)
+    }
+  }
+}
 
-
-article.addEventListener('change', (event) => {
+function handleCheckboxChange(event) {
   if (event.target.classList.contains('item-checkbox')) {
     const item = array.find(element => element.id === Number(event.target.dataset.id))
     if (item) {
@@ -153,12 +133,34 @@ article.addEventListener('change', (event) => {
     }
     if (event.target.checked) {
       event.target.parentNode.parentNode.classList.add('done')
-      console.log(event.target.parentNode.parentNode)
     } else {
       event.target.parentNode.parentNode.classList.remove('done')
-      console.log(event.target.parentNode.parentNode)
-
     }
     localStorage.setItem('data', JSON.stringify(array))
   }
-});
+}
+
+function deleteAll() {
+  if (array.length === 0) {
+    return alert('没有元素可以删除！')
+  }
+  const confirm = prompt(`你确认要删除所有代办吗？\n此操作无法撤销！\n请输入“确认删除”以确认此操作。`)
+  if (confirm === '确认删除') {
+    array.length = 0
+    renderTasks(array)
+    localStorage.setItem('data', JSON.stringify(array))
+    infoForm.reset?.()
+  }
+}
+
+
+initUnderline()
+removeExpiredTasks()
+renderTasks(array)
+
+nav.addEventListener('click', updateNav)
+infoForm.addEventListener('submit', submitModule)
+searchForm.addEventListener('submit', searchModule)
+article.addEventListener('click', deleteTask)
+article.addEventListener('change', handleCheckboxChange)
+document.querySelector('.deleteAll').addEventListener('click', deleteAll)
